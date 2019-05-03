@@ -13,10 +13,8 @@ This project contains an easy to use method to aggregate multiple tensorboard ru
 
 ## Setup and run configuration
 
-1. Download or clone repository files to your computer
-1. Go into repository folder
-1. Install requirements: `pip3 install -r requirements.txt --upgrade`
-1. You can now run the aggregation with: `python aggregator.py`
+1. pip3 install git+https://github.com/Spenhouet/tensorboard-aggregator
+2. `from tensorboard_aggregator import aggregator`
 
 ### Parameters
 
