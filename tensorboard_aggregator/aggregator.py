@@ -119,6 +119,42 @@ def aggregate(dpath, output, subpaths):
     print("Ended aggregation {}".format(name))
 
 
+def main(path=".", subpaths=[''], output="summary"):
+    """ Folder structure
+        experiment_folder
+            run_1
+                [subpath1]
+                    data
+                [subpath2]
+                    data
+            run_2
+                ...
+
+    Args:
+        path (str): Path to the experiment to be aggregated
+        subpaths (list, str): A list of subpath folders (within each run)
+        output (str): Either "summary" or "csv"
+
+    Returns:
+
+    """
+    path = Path(path)
+    if not path.exists():
+        raise argparse.ArgumentTypeError("Parameter {} is not a valid path".format(path))
+
+    ## These are all paths with runs in them
+    subpaths = [path / dname / subpath for subpath in subpaths for dname in os.listdir(path) if dname != FOLDER_NAME]
+
+    for subpath in subpaths:
+        if not os.path.exists(subpath):
+            raise argparse.ArgumentTypeError("Parameter {} is not a valid path".format(subpath))
+
+    if output not in ['summary', 'csv']:
+        raise argparse.ArgumentTypeError("Parameter {} is not summary or csv".format(output))
+
+    aggregate(path, output, subpaths)
+
+
 if __name__ == '__main__':
     def param_list(param):
         p_list = ast.literal_eval(param)
@@ -133,18 +169,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    path = Path(args.path)
-
-    if not path.exists():
-        raise argparse.ArgumentTypeError("Parameter {} is not a valid path".format(path))
-
-    subpaths = [path / dname / subpath for subpath in args.subpaths for dname in os.listdir(path) if dname != FOLDER_NAME]
-
-    for subpath in subpaths:
-        if not os.path.exists(subpath):
-            raise argparse.ArgumentTypeError("Parameter {} is not a valid path".format(subpath))
-
-    if args.output not in ['summary', 'csv']:
-        raise argparse.ArgumentTypeError("Parameter {} is not summary or csv".format(args.output))
-
-    aggregate(path, args.output, args.subpaths)
+    main(args.path, args.output, args.subpaths)
